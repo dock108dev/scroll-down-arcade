@@ -1,0 +1,76 @@
+@import "tailwindcss";
+@config "../../tailwind.config.ts";
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Design token foundation. Every arcade component pulls colour, tier,
+   and result-flash hues from these CSS custom properties so the theme
+   stays swappable and visually coherent across components.
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+:root {
+  /* Base palette — dark arcade theme */
+  --arcade-bg:       #09090b;   /* zinc-950: page/canvas background */
+  --arcade-surface:  #18181b;   /* zinc-900: card/panel surfaces */
+  --arcade-border:   #3f3f46;   /* zinc-700: dividers and outlines */
+  --arcade-text:     #fafafa;   /* zinc-50: primary text */
+  --arcade-muted:    #71717a;   /* zinc-500: subdued/secondary text */
+  --arcade-accent:   #f59e0b;   /* amber-500: LED primary (scoreboard, score numbers, accent) */
+
+  /* Pressure tier — used by WPA badges, moment borders, reveal highlights */
+  --tier-extreme:    #ef4444;   /* red-500 */
+  --tier-high:       #f97316;   /* orange-500 */
+  --tier-medium:     #eab308;   /* yellow-500 */
+  --tier-low:        #6b7280;   /* gray-500 */
+
+  /* Result flash — hitter and pitcher must both use these */
+  --result-perfect:           #f59e0b;   /* amber — same as accent */
+  --result-good:              #22c55e;   /* green-500 */
+  --result-okay:              #3b82f6;   /* blue-500 */
+  --result-early:             #f97316;   /* orange-500 */
+  --result-late:              #f97316;   /* orange-500 */
+  --result-miss:              #ef4444;   /* red-500 */
+  --result-ball:              #f97316;   /* orange-500 */
+  --result-hanger:            #ef4444;   /* red-500 */
+  --result-competitive-miss:  #3b82f6;   /* blue-500 */
+
+  /* Mobile safe area — applied at root to handle notch/home-indicator */
+  --safe-top:    env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Set the dark background on `html` as well as `body` so there is no
+   white flash before React hydrates and `body` styles apply. */
+html {
+  background-color: var(--arcade-bg);
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--arcade-bg);
+  color: var(--arcade-text);
+  font-family: system-ui, sans-serif;
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+  overflow-x: hidden;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Hitter pitch-ball approach: vertical fall combined with horizontal
+   drift driven by the per-element `--drift-px` custom property (see
+   `pitchDriftPx` in `src/lib/game/timing.ts`). Unknown / unset drift
+   falls back to 0 so the ball still travels straight down.
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@keyframes pitch-approach {
+  from {
+    transform: translate(0, 0) scale(0.4);
+  }
+  to {
+    transform: translate(var(--drift-px, 0px), 280px) scale(1);
+  }
+}
+
+.animate-pitch-approach {
+  animation-name: pitch-approach;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+}

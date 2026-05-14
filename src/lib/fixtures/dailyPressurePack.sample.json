@@ -1,0 +1,127 @@
+{
+  "date": "2026-05-13",
+  "title": "Daily MLB Pressure Run",
+  "subtitle": "5 moments from yesterday's biggest games",
+  "moments": [
+    {
+      "id": "2026-05-12-nyy-bal-0001",
+      "rank": 1,
+      "gameId": "nyy-bal-2026-05-12",
+      "momentType": "hitter",
+      "difficulty": 87,
+      "pressureTier": "high",
+      "setup": {
+        "headline": "Judge steps in with the game on the line",
+        "summary": "The Yankees had tied it in the 8th, and a leadoff double in the 9th put the winning run in scoring position.",
+        "whyThisMoment": "This was one of the highest leverage plate appearances of the night."
+      },
+      "situation": {
+        "inning": 9,
+        "half": "bottom",
+        "outs": 1,
+        "balls": 2,
+        "strikes": 1,
+        "awayTeam": "BAL",
+        "homeTeam": "NYY",
+        "awayScore": 4,
+        "homeScore": 4,
+        "runners": {
+          "first": false,
+          "second": true,
+          "third": false
+        },
+        "batter": {
+          "id": "player-1",
+          "name": "Aaron Judge",
+          "handedness": "R"
+        },
+        "pitcher": {
+          "id": "player-2",
+          "name": "Felix Bautista",
+          "handedness": "R"
+        }
+      },
+      "realOutcome": {
+        "label": "Walk-off home run",
+        "description": "Judge hit a walk-off homer to left-center.",
+        "resultType": "home_run",
+        "runsScored": 2,
+        "wpaBefore": 0.58,
+        "wpaAfter": 1.0,
+        "wpaDelta": 0.42
+      },
+      "gameplay": {
+        "hitter": {
+          "pitchSpeed": 78,
+          "timingWindowMs": 180,
+          "perfectWindowMs": 60,
+          "pitchPath": "middle-in",
+          "visualPitchType": "fastball"
+        }
+      },
+      "recap": {
+        "afterReveal": "That swing ended the game and turned a back-and-forth division matchup into the Yankees' best moment of the night."
+      }
+    },
+    {
+      "id": "2026-05-12-lad-sd-0002",
+      "rank": 2,
+      "gameId": "lad-sd-2026-05-12",
+      "momentType": "pitcher",
+      "difficulty": 91,
+      "pressureTier": "extreme",
+      "setup": {
+        "headline": "Bases loaded, full count, no room left",
+        "summary": "The Padres had loaded the bases with two outs after a walk and two singles. One mistake could flip the game.",
+        "whyThisMoment": "This was a high-leverage escape spot with the tying and go-ahead runs on base."
+      },
+      "situation": {
+        "inning": 8,
+        "half": "top",
+        "outs": 2,
+        "balls": 3,
+        "strikes": 2,
+        "awayTeam": "SD",
+        "homeTeam": "LAD",
+        "awayScore": 3,
+        "homeScore": 4,
+        "runners": {
+          "first": true,
+          "second": true,
+          "third": true
+        },
+        "batter": {
+          "id": "player-3",
+          "name": "Manny Machado",
+          "handedness": "R"
+        },
+        "pitcher": {
+          "id": "player-4",
+          "name": "Evan Phillips",
+          "handedness": "R"
+        }
+      },
+      "realOutcome": {
+        "label": "Strikeout swinging",
+        "description": "Phillips got Machado to chase a slider to end the threat.",
+        "resultType": "strikeout",
+        "runsScored": 0,
+        "wpaBefore": 0.61,
+        "wpaAfter": 0.82,
+        "wpaDelta": 0.21
+      },
+      "gameplay": {
+        "pitcher": {
+          "targetSpeed": 70,
+          "accuracyWindowMs": 160,
+          "perfectWindowMs": 55,
+          "recommendedZone": "low-away",
+          "visualPitchType": "slider"
+        }
+      },
+      "recap": {
+        "afterReveal": "That pitch ended the Padres' best scoring chance and let the Dodgers carry the lead into the 9th."
+      }
+    }
+  ]
+}
