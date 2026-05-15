@@ -6,9 +6,46 @@ import {
   ArcadeApiError,
   fetchPressureDaily,
   fetchPressureToday,
+  normalizePressurePack,
 } from "@/lib/api/sdaArcadeClient";
 
 const samplePack = fixtureRaw as ArcadeDailyPressurePack;
+
+const sdaPressurePack = {
+  date: "2026-05-13",
+  moments: [
+    {
+      gameId: "190310",
+      playIndex: 90076,
+      rank: 1,
+      difficulty: 100,
+      tier: "extreme",
+      cardPayload: {
+        id: "190310-90076",
+        half: "top",
+        type: "play",
+        title: "Top 9th",
+        inning: 9,
+        description: "Rodriguez walks home a run with the bases loaded.",
+        play: {
+          label: "WALK",
+          playId: "90076",
+          subLabel: "RUN SCORES",
+          eventType: "walk",
+          outsBefore: 2,
+          ballsBefore: 4,
+          strikesBefore: 2,
+          batterName: "Julio Rodriguez",
+          pitcherName: "Bryan King",
+          description: "Rodriguez walks home a run with the bases loaded.",
+          scoreBefore: { away: 2, home: 3 },
+          baseStateBefore: { first: true, second: true, third: true },
+          runsScoredOnPlay: 1,
+        },
+      },
+    },
+  ],
+};
 
 function jsonResponse(status: number, body: unknown): Response {
   return new Response(JSON.stringify(body), {
@@ -47,6 +84,38 @@ describe("sdaArcadeClient.fetchPressureToday", () => {
     if (!result.ok) throw new Error("narrow");
     expect(result.pack.date).toBe(samplePack.date);
     expect(result.pack.moments).toHaveLength(samplePack.moments.length);
+  });
+
+  it("normalizes the main SDA pressure-pack contract into arcade moments", async () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      jsonResponse(200, sdaPressurePack),
+    );
+    const result = await fetchPressureToday();
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error("narrow");
+    expect(result.pack.title).toBe("Daily MLB Pressure Run");
+    expect(result.pack.moments).toHaveLength(1);
+    expect(result.pack.moments[0]).toMatchObject({
+      id: "190310-90076",
+      gameId: "190310",
+      rank: 1,
+      momentType: "pitcher",
+      pressureTier: "extreme",
+      situation: {
+        inning: 9,
+        half: "top",
+        outs: 2,
+        balls: 3,
+        strikes: 2,
+        runners: { first: true, second: true, third: true },
+      },
+      realOutcome: {
+        label: "WALK",
+        resultType: "walk",
+        runsScored: 1,
+      },
+    });
+    expect(result.pack.moments[0].gameplay.pitcher).toBeDefined();
   });
 
   it("returns no_pack response for a 404 with detail + date passthrough", async () => {
@@ -91,6 +160,12 @@ describe("sdaArcadeClient.fetchPressureToday", () => {
       new TypeError("network down"),
     );
     await expect(fetchPressureToday()).rejects.toBeInstanceOf(ArcadeApiError);
+  });
+});
+
+describe("normalizePressurePack", () => {
+  it("passes through native arcade packs unchanged", () => {
+    expect(normalizePressurePack(samplePack)).toBe(samplePack);
   });
 });
 

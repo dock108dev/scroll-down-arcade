@@ -10,6 +10,42 @@ import { useProgressionStore } from "@/stores/progressionStore";
 
 const samplePack = fixtureRaw as ArcadeDailyPressurePack;
 
+const sdaPressurePack = {
+  date: "2026-05-13",
+  moments: [
+    {
+      gameId: "190310",
+      playIndex: 90076,
+      rank: 1,
+      difficulty: 100,
+      tier: "extreme",
+      cardPayload: {
+        id: "190310-90076",
+        half: "top",
+        type: "play",
+        title: "Top 9th",
+        inning: 9,
+        description: "Rodriguez walks home a run with the bases loaded.",
+        play: {
+          label: "WALK",
+          playId: "90076",
+          subLabel: "RUN SCORES",
+          eventType: "walk",
+          outsBefore: 2,
+          ballsBefore: 4,
+          strikesBefore: 2,
+          batterName: "Julio Rodriguez",
+          pitcherName: "Bryan King",
+          description: "Rodriguez walks home a run with the bases loaded.",
+          scoreBefore: { away: 2, home: 3 },
+          baseStateBefore: { first: true, second: true, third: true },
+          runsScoredOnPlay: 1,
+        },
+      },
+    },
+  ],
+};
+
 // The fixture only ships 2 moments; an ad break requires 3 strike-costing
 // outcomes before the run completes, so we widen the pack by repeating
 // moments. This is a test-only construction and does not touch any
@@ -115,6 +151,22 @@ describe("DailyRun — state routing", () => {
     expect(screen.getByTestId("off-day-date").textContent).toBe("2026-05-14");
     expect(screen.getByText(/No scheduled games/)).toBeTruthy();
     expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("loads main SDA cardPayload moments without crashing setup render", async () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify(sdaPressurePack), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      }),
+    );
+    render(<DailyRun today="2026-05-14" />);
+    await screen.findByTestId("start-screen");
+    await userEvent.click(screen.getByTestId("start-cta"));
+    expect(screen.getByTestId("scoreboard")).toBeTruthy();
+    expect(screen.getByTestId("field-state")).toBeTruthy();
+    expect(screen.getByTestId("moment-setup").textContent).toContain("WALK");
+    expect(screen.getByTestId("scoreboard").textContent).toContain("B 3");
   });
 
   it("surfaces a fetch error in the error state when transport fails", async () => {
