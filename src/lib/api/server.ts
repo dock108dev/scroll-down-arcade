@@ -10,6 +10,7 @@
 
 import { NextResponse } from "next/server";
 
+const SDA_BACKEND_BASE_URL = "https://sda.dock108.dev";
 const TODAY_PATH = "/api/v1/scroll-down-mlb/pressure/today";
 const DAILY_PATH_PREFIX = "/api/v1/scroll-down-mlb/pressure/daily/";
 // Hard upper bound on a single SDA call. Without this an unhealthy backend
@@ -47,18 +48,28 @@ function resolvePath(target: PressurePackPath): string {
 }
 
 function readEnv(): { baseUrl: string; apiKey: string } {
-  const baseUrl = process.env.ARCADE_SDA_BASE_URL?.trim();
-  const apiKey = process.env.ARCADE_API_KEY?.trim();
+  const baseUrl = (
+    process.env.SPORTS_API_INTERNAL_URL ||
+    process.env.ARCADE_SDA_BASE_URL ||
+    SDA_BACKEND_BASE_URL
+  ).trim();
+  const apiKey = (
+    process.env.SPORTS_DATA_API_KEY ||
+    process.env.SPORTS_API_KEY ||
+    process.env.API_KEY ||
+    process.env.ARCADE_API_KEY ||
+    ""
+  ).trim();
   if (!baseUrl) {
     throw new SdaUpstreamError(
-      "ARCADE_SDA_BASE_URL is not configured",
+      "SPORTS_API_INTERNAL_URL is not configured",
       503,
       null,
     );
   }
   if (!apiKey) {
     throw new SdaUpstreamError(
-      "ARCADE_API_KEY is not configured",
+      "SPORTS_DATA_API_KEY is not configured",
       503,
       null,
     );
